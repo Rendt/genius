@@ -9,6 +9,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "start": "expo start",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
     "eas:update": "eas update --branch main --non-interactive",
     "eas:build:android": "eas build -p android --non-interactive"
   },
@@ -24,6 +26,7 @@
     "@vitejs/plugin-react": "^5.0.0",
     "expo-cli": "^6.3.10",
     "typescript": "~5.8.2",
-    "vite": "^6.2.0"
+    "vite": "^6.2.0",
+    "gh-pages": "^5.0.0"
   }
 }
