@@ -34,18 +34,23 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.generateSprintContent = exports.performInitialScoping = exports.generateSyllabus = exports.resolveWebPageTitle = void 0;
+require("dotenv/config");
 const functions = __importStar(require("firebase-functions"));
 const genai_1 = require("@google/genai");
 const REGION = 'us-central1';
 const getApiKey = () => {
     const fromEnv = process.env.GEMINI_API_KEY;
-    if (fromEnv)
+    if (fromEnv) {
+        functions.logger.info('Found GEMINI_API_KEY in environment variables.');
         return fromEnv;
+    }
     const config = functions.config();
     const fromConfig = config?.gemini?.key;
-    if (fromConfig)
+    if (fromConfig) {
+        functions.logger.info('Found gemini.key in Firebase runtime config.');
         return fromConfig;
-    throw new Error('GEMINI_API_KEY is missing. Run `firebase functions:config:set gemini.key="YOUR_PROD_KEY"`.');
+    }
+    throw new Error('GEMINI_API_KEY is missing. For local development, create a file at `firebase/functions/.env` and add the line `GEMINI_API_KEY="YOUR_KEY"`. For deployed functions, run `firebase functions:config:set gemini.key="YOUR_KEY"`.');
 };
 let cachedKey = null;
 let cachedClient = null;
@@ -79,8 +84,18 @@ const withHttp = (handler) => functions
     }
     catch (error) {
         const message = error?.message || 'Unexpected error';
-        functions.logger.error(message, { error });
-        res.status(500).json({ error: { message } });
+        const stack = error?.stack || 'No stack trace available';
+        functions.logger.error('Caught an exception:', {
+            message: message,
+            stack: stack,
+            error: error
+        });
+        res.status(500).json({
+            error: {
+                message: message,
+                stack: stack
+            }
+        });
     }
 });
 exports.resolveWebPageTitle = withHttp(async ({ url }) => {
@@ -315,7 +330,7 @@ exports.generateSprintContent = withHttp(async (payload) => {
                                     id: { type: genai_1.Type.STRING },
                                     question: { type: genai_1.Type.STRING },
                                     options: { type: genai_1.Type.ARRAY, items: { type: genai_1.Type.STRING } },
-                                    correctIndex: { type: genai_1.Type.NUMBER },
+                                    correctIndex: { type: Number },
                                     explanation: { type: genai_1.Type.STRING }
                                 }
                             }

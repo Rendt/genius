@@ -5,8 +5,7 @@
       { "source": "/api/resolveWebPageTitle", "function": "resolveWebPageTitle", "region": "us-central1" },
       { "source": "/api/generateSyllabus",      "function": "generateSyllabus",      "region": "us-central1" },
       { "source": "/api/performInitialScoping","function": "performInitialScoping","region": "us-central1" },
-      { "source": "/api/generateSprintContent","function": "generateSprintContent","region": "us-central1" },
-      { "source": "/api/**", "function": "generateSyllabus", "region": "us-central1" }
+      { "source": "/api/generateSprintContent","function": "generateSprintContent","region": "us-central1" }
     ]
   },
   "functions": {
@@ -22,4 +21,3 @@
     }
   }
 }
-

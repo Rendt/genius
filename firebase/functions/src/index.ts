@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import * as functions from 'firebase-functions';
 import { GoogleGenAI, Type } from '@google/genai';
 
@@ -5,11 +6,21 @@ const REGION = 'us-central1';
 
 const getApiKey = (): string => {
   const fromEnv = process.env.GEMINI_API_KEY;
-  if (fromEnv) return fromEnv;
+  if (fromEnv) {
+    functions.logger.info('Found GEMINI_API_KEY in environment variables.');
+    return fromEnv;
+  }
+
   const config = functions.config();
   const fromConfig = config?.gemini?.key as string | undefined;
-  if (fromConfig) return fromConfig;
-  throw new Error('GEMINI_API_KEY is missing. Run `firebase functions:config:set gemini.key="YOUR_PROD_KEY"`.');
+  if (fromConfig) {
+    functions.logger.info('Found gemini.key in Firebase runtime config.');
+    return fromConfig;
+  }
+
+  throw new Error(
+    'GEMINI_API_KEY is missing. For local development, create a file at `firebase/functions/.env` and add the line `GEMINI_API_KEY="YOUR_KEY"`. For deployed functions, run `firebase functions:config:set gemini.key="YOUR_KEY"`.'
+  );
 };
 
 let cachedKey: string | null = null;
@@ -54,8 +65,18 @@ const withHttp = <TPayload, TResult>(handler: Handler<TPayload, TResult>) =>
         res.status(200).json({ result });
       } catch (error: any) {
         const message = error?.message || 'Unexpected error';
-        functions.logger.error(message, { error });
-        res.status(500).json({ error: { message } });
+        const stack = error?.stack || 'No stack trace available';
+        functions.logger.error('Caught an exception:', {
+            message: message,
+            stack: stack,
+            error: error
+        });
+        res.status(500).json({
+            error: {
+                message: message,
+                stack: stack
+            }
+        });
       }
     });
 
@@ -349,7 +370,7 @@ export const generateSprintContent = withHttp(async (payload: SprintPayload) => 
                   id: { type: Type.STRING },
                   question: { type: Type.STRING },
                   options: { type: Type.ARRAY, items: { type: Type.STRING } },
-                  correctIndex: { type: Type.NUMBER },
+                  correctIndex: { type: Number },
                   explanation: { type: Type.STRING }
                 }
               }
