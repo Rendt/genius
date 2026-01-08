@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Genius Academy | Mastery-as-a-Service</title>
+    <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              background: '#0f172a', // Slate 900 - Deep focus background
+              surface: '#1e293b',    // Slate 800 - Component background
+              primary: '#0d9488',    // Teal 600 - "Zen-Tech" Accent
+              secondary: '#64748b',  // Slate 500 - Subtitles/Muted
+              accent: '#f59e0b',     // Amber 500 - Attention/Threshold
+              success: '#10b981',    // Emerald 500
+            },
+            fontFamily: {
+              sans: ['Inter', 'system-ui', 'sans-serif'],
+              mono: ['JetBrains Mono', 'monospace'],
+            },
+            animation: {
+              'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'breathe': 'breathe 10s ease-in-out infinite',
+            },
+            keyframes: {
+              breathe: {
+                '0%, 100%': { transform: 'scale(1)', opacity: '0.8' },
+                '50%': { transform: 'scale(1.1)', opacity: '0.4' },
+              }
+            }
+          },
+        },
+      };
+    </script>
+    <!-- Fonts for Surgical Precision Aesthetic -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #0f172a;
+        color: #f8fafc;
+      }
+      .surgical-mono {
+        font-family: 'JetBrains Mono', monospace;
+      }
+      /* Hide scrollbar for Chrome, Safari and Opera */
+      .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+      }
+      /* Hide scrollbar for IE, Edge and Firefox */
+      .scrollbar-hide {
+          -ms-overflow-style: none;  /* IE and Edge */
+          scrollbar-width: none;  /* Firefox */
+      }
+    </style>
+
+<script>
+  (function(){
+    // Auto-update check: fetch version.json (no-store) and reload when SHA changes
+    try {
+      const check = async () => {
+        try {
+          // Use relative path so it works on GitHub Pages subpaths (e.g. /genius/)
+          const res = await fetch('./version.json', { cache: 'no-store' });
+          if (!res.ok) return;
+          const data = await res.json();
+          const current = localStorage.getItem('genius_version_sha');
+          if (current && current !== data.sha) {
+            localStorage.setItem('genius_version_sha', data.sha);
+            // New deploy detected — reload to fetch latest assets
+            console.debug('New deploy detected, reloading...');
+            window.location.reload();
+            return;
+          }
+          if (!current) localStorage.setItem('genius_version_sha', data.sha);
+        } catch (e) {
+          // ignore
+        }
+      };
+      // Check once on load
+      check();
+      // Also check again after 30s (in case CI finishes shortly after app load)
+      setTimeout(check, 30000);
+    } catch (e) {}
+  })();
+</script>
+  <script type="importmap">
+{
+  "imports": {
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3"
+  }
+}
+</script>
+  <script type="module" crossorigin src="./assets/index-BYENz7HR.js"></script>
+</head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
